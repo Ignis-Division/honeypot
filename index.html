@@ -318,9 +318,14 @@
   }
 
   .currency-icon {
-    font-size: 2.2rem;
     margin-bottom: 14px;
     display: block;
+  }
+  .currency-icon img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(200,149,26,0.3));
   }
   .currency-name {
     font-family: 'Cinzel', serif;
@@ -562,12 +567,16 @@
     gap: 6px;
   }
   .forge-token-icon {
-    font-size: 2rem;
     background: rgba(200,149,26,0.08);
     border: 1px solid rgba(200,149,26,0.2);
     width: 64px; height: 64px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 2px;
+  }
+  .forge-token-icon img {
+    width: 38px; height: 38px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(200,149,26,0.3));
   }
   .forge-token-label {
     font-family: 'DM Mono', monospace;
@@ -582,13 +591,17 @@
     color: var(--dim);
   }
   .forge-result-icon {
-    font-size: 2.4rem;
     background: rgba(200,149,26,0.15);
     border: 1px solid rgba(200,149,26,0.4);
     width: 76px; height: 76px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 2px;
     box-shadow: 0 0 20px rgba(200,149,26,0.15);
+  }
+  .forge-result-icon img {
+    width: 46px; height: 46px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(200,149,26,0.5));
   }
   .forge-warning {
     font-family: 'DM Mono', monospace;
@@ -706,7 +719,7 @@
 
     <div class="currency-grid">
       <div class="currency-card reveal">
-        <span class="currency-icon">🍯</span>
+        <span class="currency-icon"><img src="bcoin.png" alt="Nectar"></span>
         <div class="currency-name">Nectar</div>
         <div class="currency-desc">The everyday currency of the hive. Earned from daily logins, completing tasks, and being an active member of the community.</div>
         <div class="currency-how">
@@ -718,7 +731,7 @@
       </div>
 
       <div class="currency-card reveal" style="transition-delay:0.1s">
-        <span class="currency-icon">🌼</span>
+        <span class="currency-icon"><img src="amber.png" alt="Amber"></span>
         <div class="currency-name">Amber</div>
         <div class="currency-desc">An engagement currency earned through sustained dedication. Required to access Bee's most exclusive members-only content.</div>
         <div class="currency-how">
@@ -730,7 +743,7 @@
       </div>
 
       <div class="currency-card aurelia reveal" style="transition-delay:0.2s">
-        <span class="currency-icon">👑</span>
+        <span class="currency-icon"><img src="aurelia.png" alt="Aurelia"></span>
         <div class="currency-name">Aurelia</div>
         <div class="currency-desc">Ultra-rare prestige currency. Held only by the most devoted of Bee's hive. Cannot be gifted — only forged or granted.</div>
         <div class="currency-how">
@@ -821,17 +834,17 @@
     <div class="forge-box reveal">
       <div class="forge-formula">
         <div class="forge-token">
-          <div class="forge-token-icon">🍯</div>
+          <div class="forge-token-icon"><img src="bcoin.png" alt="Nectar"></div>
           <div class="forge-token-label">50 Nectar</div>
         </div>
         <div class="forge-op">+</div>
         <div class="forge-token">
-          <div class="forge-token-icon">🌼</div>
+          <div class="forge-token-icon"><img src="amber.png" alt="Amber"></div>
           <div class="forge-token-label">50 Amber</div>
         </div>
         <div class="forge-op">→</div>
         <div class="forge-token">
-          <div class="forge-result-icon">👑</div>
+          <div class="forge-result-icon"><img src="aurelia.png" alt="Aurelia"></div>
           <div class="forge-token-label">1 Aurelia</div>
         </div>
       </div>
