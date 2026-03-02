@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honeypot — Bee's Fan Economy Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:   #0a0806;
+    --deep:    #110e08;
+    --panel:   #16120a;
+    --gold:    #c8951a;
+    --gold2:   #e8b840;
+    --gold3:   #f5d060;
+    --amber:   #d4780a;
+    --cream:   #f0dea0;
+    --dim:     #7a6030;
+    --muted:   #4a3a18;
+    --rule:    rgba(200,149,26,0.18);
+    --glow:    rgba(200,149,26,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  body { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23c8951a' opacity='0.8'/%3E%3C/svg%3E") 10 10, auto; }
+
+  /* ── GRAIN ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── HONEYCOMB BG ── */
+  .hex-bg {
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(200,149,26,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(212,120,10,0.03) 0%, transparent 40%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 0 L56 16 L56 50 L28 66 L0 50 L0 16Z' fill='none' stroke='rgba(200,149,26,0.04)' stroke-width='0.5'/%3E%3Cpath d='M28 66 L56 82 L56 116 L28 132 L0 116 L0 82Z' fill='none' stroke='rgba(200,149,26,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%,
+      rgba(200,149,26,0.08) 0%,
+      transparent 70%);
+    pointer-events: none;
+  }
+
+  .ticket-wrap {
+    position: relative;
+    margin-bottom: 40px;
+    animation: floatTicket 6s ease-in-out infinite;
+  }
+  .ticket-wrap img {
+    width: min(520px, 85vw);
+    filter: drop-shadow(0 0 40px rgba(200,149,26,0.35)) drop-shadow(0 0 80px rgba(200,149,26,0.15));
+    border-radius: 4px;
+  }
+
+  @keyframes floatTicket {
+    0%, 100% { transform: translateY(0) rotate(-0.3deg); }
+    50%       { transform: translateY(-12px) rotate(0.3deg); }
+  }
+
+  .hero-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 16px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-desc {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.7);
+    max-width: 540px;
+    font-style: italic;
+    animation: fadeUp 0.8s 0.3s ease both;
+    margin-bottom: 40px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .btn-gold {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+    color: var(--black);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 400;
+    transition: filter 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-gold:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+  .btn-ghost {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 13px 32px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(200,149,26,0.35);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    background: rgba(200,149,26,0.06);
+    transform: translateY(-2px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.35;
+    animation: fadeUp 1s 1s ease both;
+  }
+  .scroll-hint span {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .scroll-arrow {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollDrop 1.6s ease-in-out infinite;
+  }
+  @keyframes scrollDrop {
+    0%   { transform: scaleY(0); transform-origin: top; }
+    50%  { transform: scaleY(1); transform-origin: top; }
+    51%  { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ── SECTION LAYOUT ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 24px;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .section-lead {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.55);
+    font-style: italic;
+    margin-bottom: 48px;
+    max-width: 560px;
+  }
+
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 80px 0;
+    opacity: 0.25;
+  }
+  .divider-ornament::before, .divider-ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold);
+  }
+  .divider-ornament span {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── CURRENCY CARDS ── */
+  .currency-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 680px) {
+    .currency-grid { grid-template-columns: 1fr; }
+  }
+
+  .currency-card {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .currency-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .currency-card:hover { transform: translateY(-4px); border-color: rgba(200,149,26,0.35); }
+  .currency-card:hover::before { opacity: 1; }
+
+  .currency-card.aurelia {
+    border-color: rgba(200,149,26,0.3);
+    background: linear-gradient(135deg, #1a1208, #0f0c06);
+  }
+
+  .currency-icon {
+    font-size: 2.2rem;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .currency-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--gold2);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .currency-desc {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.55);
+    line-height: 1.6;
+  }
+  .currency-how {
+    margin-top: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+  .currency-how span {
+    display: block;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+
+  /* ── COIN IMAGE FLOAT ── */
+  .coin-float {
+    text-align: center;
+    margin: 0 0 48px;
+  }
+  .coin-float img {
+    width: min(220px, 50vw);
+    filter: drop-shadow(0 0 30px rgba(200,149,26,0.4));
+    animation: floatCoin 5s ease-in-out infinite;
+  }
+  @keyframes floatCoin {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50%       { transform: translateY(-10px) rotate(1deg); }
+  }
+
+  /* ── COMMANDS ── */
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .cmd-card {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 18px 20px;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .cmd-card:hover {
+    background: rgba(200,149,26,0.04);
+    border-color: rgba(200,149,26,0.3);
+  }
+  .cmd-card-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--gold3);
+    margin-bottom: 6px;
+  }
+  .cmd-card-name::before {
+    content: '/';
+    color: var(--gold);
+    opacity: 0.6;
+    margin-right: 1px;
+  }
+  .cmd-card-desc {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.5);
+    line-height: 1.5;
+  }
+  .cmd-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    padding: 2px 7px;
+    border-radius: 1px;
+    text-transform: uppercase;
+  }
+  .badge-admin { background: rgba(200,149,26,0.12); color: var(--gold); border: 1px solid rgba(200,149,26,0.25); }
+  .badge-nsfw  { background: rgba(180,40,20,0.1);  color: #c06050;    border: 1px solid rgba(180,40,20,0.2); }
+  .badge-rare  { background: rgba(200,149,26,0.08); color: var(--gold2); border: 1px solid rgba(200,149,26,0.2); }
+
+  /* ── HOW IT WORKS ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    opacity: 0.2;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(200,149,26,0.07);
+    align-items: start;
+  }
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    opacity: 0.25;
+    line-height: 1;
+    text-align: center;
+    padding-top: 4px;
+  }
+  .step-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--gold2);
+    margin-bottom: 6px;
+  }
+  .step-desc {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.55);
+    line-height: 1.65;
+  }
+  .step-cmd {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gold3);
+    background: rgba(200,149,26,0.08);
+    border: 1px solid rgba(200,149,26,0.2);
+    border-radius: 2px;
+    padding: 2px 8px;
+    margin-top: 8px;
+  }
+
+  /* ── TIERS ── */
+  .tier-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tier-row {
+    display: grid;
+    grid-template-columns: 48px 160px 1fr auto;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(200,149,26,0.06);
+    transition: background 0.15s;
+  }
+  .tier-row:last-child { border-bottom: none; }
+  .tier-row:hover { background: rgba(200,149,26,0.025); }
+  .tier-row:first-child { border-top: 1px solid rgba(200,149,26,0.06); }
+
+  .tier-emoji { font-size: 1.5rem; text-align: center; }
+  .tier-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+  }
+  .tier-req {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.45);
+  }
+  .tier-bonus {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 600px) {
+    .tier-row { grid-template-columns: 36px 1fr; grid-template-rows: auto auto; }
+    .tier-req { grid-column: 2; }
+    .tier-bonus { grid-column: 1 / -1; text-align: left; padding-left: 56px; }
+  }
+
+  /* ── FORGE SECTION ── */
+  .forge-box {
+    background: linear-gradient(135deg, #1a1208 0%, #0f0c06 100%);
+    border: 1px solid rgba(200,149,26,0.25);
+    border-radius: 2px;
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .forge-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%,
+      rgba(200,149,26,0.08), transparent);
+    pointer-events: none;
+  }
+  .forge-formula {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 28px 0;
+  }
+  .forge-token {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .forge-token-icon {
+    font-size: 2rem;
+    background: rgba(200,149,26,0.08);
+    border: 1px solid rgba(200,149,26,0.2);
+    width: 64px; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 2px;
+  }
+  .forge-token-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .forge-op {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: var(--dim);
+  }
+  .forge-result-icon {
+    font-size: 2.4rem;
+    background: rgba(200,149,26,0.15);
+    border: 1px solid rgba(200,149,26,0.4);
+    width: 76px; height: 76px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 2px;
+    box-shadow: 0 0 20px rgba(200,149,26,0.15);
+  }
+  .forge-warning {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin-top: 16px;
+    text-transform: uppercase;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 60px 24px 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .footer-bee { font-size: 2rem; margin-bottom: 12px; display: block; }
+  .footer-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--gold2);
+    margin-bottom: 6px;
+  }
+  .footer-tagline {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+  .footer-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.5;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── HIGHLIGHT RULE ── */
+  .gold-rule {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 0 40px;
+  }
+
+  /* ── NSFW NOTE ── */
+  .nsfw-notice {
+    background: rgba(180,40,20,0.05);
+    border: 1px solid rgba(180,40,20,0.15);
+    border-left: 3px solid rgba(180,40,20,0.4);
+    border-radius: 0 2px 2px 0;
+    padding: 16px 20px;
+    margin-top: 32px;
+    font-size: 0.88rem;
+    font-style: italic;
+    color: rgba(240,180,160,0.6);
+  }
+</style>
+</head>
+<body>
+
+<div class="hex-bg"></div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-kicker">Bee's exclusive fan economy</div>
+  <div class="ticket-wrap">
+    <img src="ticket.png" alt="Honeypot ticket" loading="eager">
+  </div>
+  <h1>HONEYPOT</h1>
+  <div class="hero-sub">The Official Fan Bot</div>
+  <p class="hero-desc">Earn currency. Climb the hive. Get access to Bee's most exclusive content — the sweeter you work for it, the better it gets.</p>
+  <div class="hero-ctas">
+    <a href="#how-it-works" class="btn-gold">How It Works</a>
+    <a href="#commands" class="btn-ghost">All Commands</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ══ CURRENCIES ══ -->
+<section id="currencies">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-kicker">The Economy</div>
+      <div class="section-title">Three Currencies</div>
+      <p class="section-lead">Every action in Bee's server earns you currency. How you spend it — and how far you're willing to go — is up to you.</p>
+    </div>
+
+    <div class="coin-float reveal">
+      <img src="bcoin.png" alt="Honeypot coin" loading="lazy">
+    </div>
+
+    <div class="currency-grid">
+      <div class="currency-card reveal">
+        <span class="currency-icon">🍯</span>
+        <div class="currency-name">Nectar</div>
+        <div class="currency-desc">The everyday currency of the hive. Earned from daily logins, completing tasks, and being an active member of the community.</div>
+        <div class="currency-how">
+          How to earn:
+          <span>→ Daily login bonus</span>
+          <span>→ Completing tasks</span>
+          <span>→ Gifts from Bee</span>
+        </div>
+      </div>
+
+      <div class="currency-card reveal" style="transition-delay:0.1s">
+        <span class="currency-icon">🌼</span>
+        <div class="currency-name">Amber</div>
+        <div class="currency-desc">An engagement currency earned through sustained dedication. Required to access Bee's most exclusive members-only content.</div>
+        <div class="currency-how">
+          How to earn:
+          <span>→ +1 every daily login</span>
+          <span>→ 5-day streak bonus</span>
+          <span>→ Special tasks</span>
+        </div>
+      </div>
+
+      <div class="currency-card aurelia reveal" style="transition-delay:0.2s">
+        <span class="currency-icon">👑</span>
+        <div class="currency-name">Aurelia</div>
+        <div class="currency-desc">Ultra-rare prestige currency. Held only by the most devoted of Bee's hive. Cannot be gifted — only forged or granted.</div>
+        <div class="currency-how">
+          How to obtain:
+          <span>→ Forge (50 nectar + 50 amber)</span>
+          <span>→ Monthly admin grant</span>
+          <span>→ Almost impossible to get</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider-ornament reveal"><span>✦</span></div></div>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-kicker">Getting Started</div>
+      <div class="section-title">How It Works</div>
+      <p class="section-lead">New to the hive? Here's everything you need to know to get started.</p>
+      <div class="gold-rule"></div>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">Claim Your Daily Bonus</div>
+          <div class="step-desc">Log in every day and claim your free nectar and amber. VIP members earn double nectar. Keeping a streak going unlocks bonus tasks — don't break the chain, sugar.</div>
+          <div class="step-cmd">/daily</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">Complete Tasks to Earn More</div>
+          <div class="step-desc">There are several ways to earn beyond the daily — reacting to posts, sharing the server, maintaining streaks. Some tasks are one-time, others reset on a cooldown.</div>
+          <div class="step-cmd">/earn</div>
+          <div class="step-cmd">/task complete</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">Browse the Boutique</div>
+          <div class="step-desc">Bee's shop is stocked with exclusive items — personalised voice notes, roast sessions, outfit ratings, photos, handwritten letters, and more. NSFW items are gated behind the members-only role.</div>
+          <div class="step-cmd">/shop</div>
+          <div class="step-cmd">/buy &lt;id&gt;</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div>
+          <div class="step-title">Climb the Ranks</div>
+          <div class="step-desc">Your score is calculated from all nectar earned and spent. As you climb the tiers — New Blossom up to Hive Elite — you unlock Discord roles and receive bonus nectar rewards.</div>
+          <div class="step-cmd">/rank</div>
+          <div class="step-cmd">/leaderboard</div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <div class="step-num">05</div>
+        <div>
+          <div class="step-title">Forge Aurelia (Advanced)</div>
+          <div class="step-desc">Once you've accumulated enough nectar and amber, you can sacrifice them to forge a single aurelia — the rarest currency in the hive. Aurelia unlocks the most prestigious items in Bee's boutique.</div>
+          <div class="step-cmd">/forge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider-ornament reveal"><span>✦</span></div></div>
+
+<!-- ══ FORGE ══ -->
+<section id="forge">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-kicker">Prestige System</div>
+      <div class="section-title">The Forge</div>
+      <p class="section-lead">Aurelia cannot be bought. It must be earned the hard way.</p>
+    </div>
+    <div class="forge-box reveal">
+      <div class="forge-formula">
+        <div class="forge-token">
+          <div class="forge-token-icon">🍯</div>
+          <div class="forge-token-label">50 Nectar</div>
+        </div>
+        <div class="forge-op">+</div>
+        <div class="forge-token">
+          <div class="forge-token-icon">🌼</div>
+          <div class="forge-token-label">50 Amber</div>
+        </div>
+        <div class="forge-op">→</div>
+        <div class="forge-token">
+          <div class="forge-result-icon">👑</div>
+          <div class="forge-token-label">1 Aurelia</div>
+        </div>
+      </div>
+      <p style="font-size:0.95rem; font-weight:300; color:rgba(240,222,160,0.5); font-style:italic; max-width:440px; margin:0 auto;">
+        The trade is irreversible. Once forged, aurelia stays with you — it cannot be gifted to another fan.
+      </p>
+      <div class="forge-warning">Use /forge to begin · Confirmation required before trade executes</div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider-ornament reveal"><span>✦</span></div></div>
+
+<!-- ══ TIERS ══ -->
+<section id="tiers">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-kicker">Ranking System</div>
+      <div class="section-title">The Hive Tiers</div>
+      <p class="section-lead">Every fan starts as a New Blossom. Show your devotion and Bee will know.</p>
+      <div class="gold-rule"></div>
+    </div>
+
+    <div class="tier-list reveal">
+      <div class="tier-row">
+        <div class="tier-emoji">👑</div>
+        <div class="tier-name">Hive Elite</div>
+        <div class="tier-req">200+ points · Discord role + bonus nectar reward</div>
+        <div class="tier-bonus">Top of the hive</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🌟</div>
+        <div class="tier-name">Queen's Guard</div>
+        <div class="tier-req">100+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+15 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🌼</div>
+        <div class="tier-name">Golden Petal</div>
+        <div class="tier-req">50+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+10 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🐝</div>
+        <div class="tier-name">Worker Bee</div>
+        <div class="tier-req">20+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+5 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🌸</div>
+        <div class="tier-name">New Blossom</div>
+        <div class="tier-req">Everyone starts here</div>
+        <div class="tier-bonus">Welcome home</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider-ornament reveal"><span>✦</span></div></div>
+
+<!-- ══ COMMANDS ══ -->
+<section id="commands">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-kicker">Command Reference</div>
+      <div class="section-title">All Commands</div>
+      <p class="section-lead">Everything the bot can do, at a glance.</p>
+      <div class="gold-rule"></div>
+    </div>
+
+    <div class="reveal" style="margin-bottom:24px;">
+      <div class="section-kicker" style="margin-bottom:16px;">Economy</div>
+      <div class="cmd-grid">
+        <div class="cmd-card">
+          <div class="cmd-card-name">daily</div>
+          <div class="cmd-card-desc">Claim your daily nectar + amber. VIP members earn double nectar. Resets every 24h.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">balance</div>
+          <div class="cmd-card-desc">View all three of your wallets — nectar, amber, and aurelia — plus recent transaction history.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">earn</div>
+          <div class="cmd-card-desc">See all available ways to earn currency including tasks and daily streaks.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">task complete</div>
+          <div class="cmd-card-desc">Complete a specific task from the earn list to receive its currency reward.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">gift &lt;user&gt; &lt;amount&gt;</div>
+          <div class="cmd-card-desc">Send nectar or amber to another fan. Aurelia cannot be gifted — it must be forged.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">forge</div>
+          <div class="cmd-card-desc">Trade 50 nectar + 50 amber to create 1 aurelia. Irreversible. Confirmation required.</div>
+          <span class="cmd-badge badge-rare">Rare</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-bottom:24px;">
+      <div class="section-kicker" style="margin-bottom:16px;">Shop</div>
+      <div class="cmd-grid">
+        <div class="cmd-card">
+          <div class="cmd-card-name">shop</div>
+          <div class="cmd-card-desc">Browse Bee's boutique. NSFW items are hidden unless you have the members-only role.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">buy &lt;id&gt;</div>
+          <div class="cmd-card-desc">Purchase an item by its ID. Confirmation prompt before any currency is deducted.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">purchases</div>
+          <div class="cmd-card-desc">View your full purchase history from Bee's boutique.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">waitlist join &lt;id&gt;</div>
+          <div class="cmd-card-desc">Join the waitlist for a sold-out item. Costs 2 nectar (fully refundable if you leave).</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">waitlist leave &lt;id&gt;</div>
+          <div class="cmd-card-desc">Leave a waitlist and get your nectar back automatically.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">waitlist view</div>
+          <div class="cmd-card-desc">See all your active waitlist positions and how many people are ahead of you.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-bottom:24px;">
+      <div class="section-kicker" style="margin-bottom:16px;">Gifts & Ranking</div>
+      <div class="cmd-grid">
+        <div class="cmd-card">
+          <div class="cmd-card-name">gifts view</div>
+          <div class="cmd-card-desc">See all unclaimed gifts from Bee waiting in your inbox.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">gifts claim &lt;id&gt;</div>
+          <div class="cmd-card-desc">Claim a specific gift by its ID and add it to your wallet.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">gifts claimall</div>
+          <div class="cmd-card-desc">Claim everything in your gift inbox in one command.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">rank</div>
+          <div class="cmd-card-desc">Check your current tier, score, and how many points until your next tier up.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">leaderboard</div>
+          <div class="cmd-card-desc">See the top fans in the hive ranked by score. Updates tier roles automatically.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="section-kicker" style="margin-bottom:16px;">Admin Only</div>
+      <div class="cmd-grid">
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin stats</div>
+          <div class="cmd-card-desc">Full overview of all fans, purchases, and currency in circulation.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin revenue</div>
+          <div class="cmd-card-desc">Bee's personal sales log — every purchase, buyer, price, and date.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin additem</div>
+          <div class="cmd-card-desc">Add a new item to the boutique with full control over price, currency, quantity, and NSFW flag.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin giveaurelia</div>
+          <div class="cmd-card-desc">Grant 1 aurelia to a fan. Limited to once per admin per calendar month.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin dropadd</div>
+          <div class="cmd-card-desc">Schedule a timed drop. A countdown appears in the drops channel and updates every minute.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin gift</div>
+          <div class="cmd-card-desc">Queue a personal gift for any fan — including aurelia — with an optional message.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+      </div>
+
+      <div class="nsfw-notice">
+        🔞 NSFW items in the boutique are hidden from all fans by default. They're only visible to members holding the designated role and are priced exclusively in amber.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <span class="footer-bee">🐝</span>
+  <div class="footer-name">HONEYPOT</div>
+  <div class="footer-tagline">*Bee's world. Your currency. Spend wisely, honey.*</div>
+  <div class="footer-mono">Exclusive fan economy bot · All rights reserved</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 40);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
