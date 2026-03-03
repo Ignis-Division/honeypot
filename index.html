@@ -803,7 +803,7 @@
         <div class="step-num">04</div>
         <div>
           <div class="step-title">Climb the Ranks</div>
-          <div class="step-desc">Your score is calculated from all nectar earned and spent. As you climb the tiers — New Blossom up to Hive Elite — you unlock Discord roles and receive bonus nectar rewards.</div>
+          <div class="step-desc">Your score is calculated from all nectar earned and spent. As you climb the tiers — Drone Bee up to Hive Elite — you unlock Discord roles and receive bonus nectar rewards.</div>
           <div class="step-cmd">/rank</div>
           <div class="step-cmd">/leaderboard</div>
         </div>
@@ -872,26 +872,50 @@
       <div class="tier-row">
         <div class="tier-emoji">👑</div>
         <div class="tier-name">Hive Elite</div>
-        <div class="tier-req">200+ points · Discord role + bonus nectar reward</div>
+        <div class="tier-req">500+ points · Discord role + bonus nectar reward</div>
         <div class="tier-bonus">Top of the hive</div>
       </div>
       <div class="tier-row">
         <div class="tier-emoji">🌟</div>
         <div class="tier-name">Queen's Guard</div>
-        <div class="tier-req">100+ points · Discord role + nectar bonus</div>
+        <div class="tier-req">300+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+20 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🍯</div>
+        <div class="tier-name">Honey Maker</div>
+        <div class="tier-req">200+ points · Discord role + nectar bonus</div>
         <div class="tier-bonus">+15 nectar</div>
       </div>
       <div class="tier-row">
         <div class="tier-emoji">🌼</div>
         <div class="tier-name">Golden Petal</div>
-        <div class="tier-req">50+ points · Discord role + nectar bonus</div>
-        <div class="tier-bonus">+10 nectar</div>
+        <div class="tier-req">120+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+12 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🌺</div>
+        <div class="tier-name">Nectar Collector</div>
+        <div class="tier-req">70+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+8 nectar</div>
       </div>
       <div class="tier-row">
         <div class="tier-emoji">🐝</div>
         <div class="tier-name">Worker Bee</div>
-        <div class="tier-req">20+ points · Discord role + nectar bonus</div>
+        <div class="tier-req">40+ points · Discord role + nectar bonus</div>
         <div class="tier-bonus">+5 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🌻</div>
+        <div class="tier-name">Pollen Handler</div>
+        <div class="tier-req">20+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+3 nectar</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🐛</div>
+        <div class="tier-name">Drone Bee</div>
+        <div class="tier-req">8+ points · Discord role + nectar bonus</div>
+        <div class="tier-bonus">+1 nectar</div>
       </div>
       <div class="tier-row">
         <div class="tier-emoji">🌸</div>
@@ -899,6 +923,51 @@
         <div class="tier-req">Everyone starts here</div>
         <div class="tier-bonus">Welcome home</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider-ornament reveal"><span>✦</span></div></div>
+
+<!-- ══ SPECIALTY ROLES ══ -->
+<section id="specialty-roles">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-kicker">Community Roles</div>
+      <div class="section-title">Specialty Roles</div>
+      <p class="section-lead">Beyond the economy tiers, Bee can assign special community roles that reflect your place in the hive.</p>
+      <div class="gold-rule"></div>
+    </div>
+
+    <div class="tier-list reveal">
+      <div class="tier-row">
+        <div class="tier-emoji">🌸</div>
+        <div class="tier-name">Flower Scout</div>
+        <div class="tier-req">Recruiter — brought new members to the hive</div>
+        <div class="tier-bonus">Admin-assigned</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🐛</div>
+        <div class="tier-name">Larva</div>
+        <div class="tier-req">New or unverified member</div>
+        <div class="tier-bonus">Admin-assigned</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🚀</div>
+        <div class="tier-name">Booster Bee</div>
+        <div class="tier-req">Server booster — supporting the hive directly</div>
+        <div class="tier-bonus">Admin-assigned</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-emoji">🔧</div>
+        <div class="tier-name">Hive Helper</div>
+        <div class="tier-req">Bot or support helper for the community</div>
+        <div class="tier-bonus">Admin-assigned</div>
+      </div>
+    </div>
+
+    <div class="nsfw-notice" style="margin-top:28px; border-left-color: rgba(200,149,26,0.4); background: rgba(200,149,26,0.03); border-color: rgba(200,149,26,0.15); color: rgba(240,222,160,0.55);">
+      Specialty roles are assigned manually by Bee's admins using <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/admin giverole</code> — they exist alongside your earned economy tier and don't affect your score.
     </div>
   </div>
 </section>
@@ -1033,6 +1102,21 @@
         <div class="cmd-card">
           <div class="cmd-card-name">admin gift</div>
           <div class="cmd-card-desc">Queue a personal gift for any fan — including aurelia — with an optional message.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin giverole</div>
+          <div class="cmd-card-desc">Assign a specialty community role (Flower Scout, Larva, Booster Bee, Hive Helper) to any member. Creates the Discord role automatically if it doesn't exist.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin takerole</div>
+          <div class="cmd-card-desc">Remove a specialty community role from a member.</div>
+          <span class="cmd-badge badge-admin">Admin</span>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-card-name">admin roles</div>
+          <div class="cmd-card-desc">List all specialty roles and every member currently holding each one.</div>
           <span class="cmd-badge badge-admin">Admin</span>
         </div>
       </div>
