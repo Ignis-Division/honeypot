@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honeypot — Member Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:   #0a0806;
+    --deep:    #110e08;
+    --panel:   #16120a;
+    --gold:    #c8951a;
+    --gold2:   #e8b840;
+    --gold3:   #f5d060;
+    --amber:   #d4780a;
+    --cream:   #f0dea0;
+    --dim:     #7a6030;
+    --muted:   #4a3a18;
+    --rule:    rgba(200,149,26,0.18);
+    --glow:    rgba(200,149,26,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23c8951a' opacity='0.8'/%3E%3C/svg%3E") 10 10, auto;
+  }
+
+  /* ── GRAIN ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── HONEYCOMB BG ── */
+  .hex-bg {
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(200,149,26,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(212,120,10,0.03) 0%, transparent 40%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 0 L56 16 L56 50 L28 66 L0 50 L0 16Z' fill='none' stroke='rgba(200,149,26,0.04)' stroke-width='0.5'/%3E%3Cpath d='M28 66 L56 82 L56 116 L28 132 L0 116 L0 82Z' fill='none' stroke='rgba(200,149,26,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,4,2,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo img { width: 28px; height: 28px; object-fit: contain; }
+  .nav-logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--gold2);
+  }
+  .nav-links {
+    display: flex; gap: 28px; align-items: center;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 80px 24px 60px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-header-kicker {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 16px;
+  }
+  .page-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold3) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    animation: fadeUp 0.8s ease both;
+    -webkit-text-fill-color: transparent;
+  }
+  .page-header-desc {
+    font-size: 1.1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(240,222,160,0.55);
+    max-width: 520px;
+    margin: 0 auto;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  /* ── LAYOUT ── */
+  .guide-layout {
+    position: relative; z-index: 1;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .guide-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky;
+    top: 76px;
+  }
+  .sidebar-section {
+    margin-bottom: 32px;
+  }
+  .sidebar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-bottom: 10px;
+  }
+  .sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sidebar-links a {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--dim);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-left: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    border-radius: 0 2px 2px 0;
+  }
+  .sidebar-links a:hover {
+    color: var(--cream);
+    border-left-color: var(--gold);
+  }
+  .sidebar-links a.active {
+    color: var(--gold2);
+    border-left-color: var(--gold);
+  }
+
+  /* ── GUIDE CONTENT ── */
+  .guide-content {
+    min-width: 0;
+  }
+
+  .guide-section {
+    margin-bottom: 72px;
+  }
+  .guide-section:last-child { margin-bottom: 0; }
+
+  .guide-section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .guide-section-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+  .guide-section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+  }
+  .guide-section-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-top: 2px;
+  }
+
+  /* ── COMMAND ENTRY ── */
+  .cmd-entry {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 24px 28px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cmd-entry::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .cmd-entry:hover { border-color: rgba(200,149,26,0.3); }
+  .cmd-entry:hover::before { opacity: 1; }
+
+  .cmd-entry-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .cmd-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gold3);
+    background: rgba(200,149,26,0.07);
+    border: 1px solid rgba(200,149,26,0.18);
+    border-radius: 2px;
+    padding: 3px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cmd-name::before {
+    content: '/';
+    color: var(--gold);
+    opacity: 0.5;
+  }
+  .cmd-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .tag-free    { background: rgba(100,180,80,0.08);  color: #88b850; border: 1px solid rgba(100,180,80,0.2); }
+  .tag-cost    { background: rgba(200,149,26,0.08);  color: var(--gold); border: 1px solid rgba(200,149,26,0.2); }
+  .tag-rare    { background: rgba(180,120,220,0.08); color: #c090e0; border: 1px solid rgba(180,120,220,0.2); }
+  .tag-members { background: rgba(180,40,20,0.08);   color: #c06050; border: 1px solid rgba(180,40,20,0.2); }
+
+  .cmd-plain {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.7);
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+
+  .cmd-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .cmd-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.9rem;
+    color: rgba(240,222,160,0.55);
+    font-weight: 300;
+  }
+  .cmd-step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    opacity: 0.6;
+    min-width: 18px;
+    padding-top: 3px;
+  }
+
+  .cmd-tip {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(200,149,26,0.04);
+    border-left: 2px solid rgba(200,149,26,0.25);
+    font-size: 0.88rem;
+    font-style: italic;
+    color: rgba(240,222,160,0.45);
+    border-radius: 0 2px 2px 0;
+  }
+  .cmd-tip strong {
+    color: var(--gold);
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .cmd-example {
+    margin-top: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(200,149,26,0.6);
+    letter-spacing: 0.03em;
+  }
+  .cmd-example span {
+    color: rgba(200,149,26,0.35);
+    margin-right: 6px;
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 3px;
+    padding: 20px 24px;
+    margin: 28px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .callout-gold {
+    background: rgba(200,149,26,0.05);
+    border: 1px solid rgba(200,149,26,0.2);
+    border-left: 3px solid rgba(200,149,26,0.5);
+    color: rgba(240,222,160,0.7);
+  }
+  .callout-gold .callout-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gold2);
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  /* ── CURRENCY PILLS ── */
+  .currency-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .currency-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 40px;
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: rgba(240,222,160,0.65);
+    transition: border-color 0.2s;
+  }
+  .currency-pill:hover { border-color: rgba(200,149,26,0.3); }
+  .currency-pill img {
+    width: 18px; height: 18px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(200,149,26,0.3));
+  }
+  .currency-pill strong {
+    color: var(--gold2);
+    font-weight: 400;
+  }
+
+  /* ── DIVIDER ── */
+  .divider-ornament {
+    display: flex; align-items: center; gap: 20px;
+    margin: 56px 0; opacity: 0.2;
+  }
+  .divider-ornament::before, .divider-ornament::after {
+    content: ''; flex: 1; height: 1px; background: var(--gold);
+  }
+  .divider-ornament span {
+    font-family: 'Cinzel', serif; font-size: 14px;
+    color: var(--gold); letter-spacing: 0.2em;
+  }
+
+  /* ── REVEAL ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 48px 24px 36px;
+    border-top: 1px solid var(--rule);
+  }
+  .footer-bee { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+  .footer-name { font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.12em; color: var(--gold2); margin-bottom: 4px; }
+  .footer-mono { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); opacity: 0.5; margin-top: 20px; }
+  .footer-links { display: flex; gap: 24px; justify-content: center; margin-top: 16px; }
+  .footer-links a { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="hex-bg"></div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="bcoin.png" alt="Honeypot">
+    <span class="nav-logo-text">HONEYPOT</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="guide.html" class="active">Member Guide</a>
+  </div>
+</nav>
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="page-header">
+  <div class="page-header-kicker">For new members</div>
+  <h1>Member Guide</h1>
+  <p class="page-header-desc">Everything you can do in the hive, explained in plain English. No prior experience required.</p>
+</div>
+
+<!-- ══ MAIN LAYOUT ══ -->
+<div class="guide-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">On this page</div>
+      <div class="sidebar-links">
+        <a href="#currencies" class="active">Currencies</a>
+        <a href="#daily">Daily & Streaks</a>
+        <a href="#earning">Earning More</a>
+        <a href="#shop">The Shop</a>
+        <a href="#waitlist">Waitlists</a>
+        <a href="#gifts">Gifts</a>
+        <a href="#ranking">Your Rank</a>
+        <a href="#forge">The Forge</a>
+        <a href="#gifting">Gifting Others</a>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Pages</div>
+      <div class="sidebar-links">
+        <a href="index.html">← Back to Home</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="guide-content">
+
+    <!-- ── CURRENCIES ── -->
+    <div class="guide-section reveal" id="currencies">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">🪙</div>
+        <div>
+          <div class="guide-section-title">The Three Currencies</div>
+          <div class="guide-section-sub">What you're earning and spending</div>
+        </div>
+      </div>
+
+      <p class="cmd-plain">Honeypot runs on three types of currency. Think of them as different tiers of loyalty — the harder they are to get, the more powerful they are.</p>
+
+      <div class="currency-pills">
+        <div class="currency-pill"><img src="bcoin.png" alt="Nectar"><strong>Nectar</strong> — everyday currency</div>
+        <div class="currency-pill"><img src="amber.png" alt="Amber"><strong>Amber</strong> — members-only access</div>
+        <div class="currency-pill"><img src="aurelia.png" alt="Aurelia"><strong>Aurelia</strong> — ultra-rare prestige</div>
+      </div>
+
+      <div class="callout callout-gold">
+        <div class="callout-title">Quick summary</div>
+        <strong>Nectar</strong> is what you'll use most — you earn it daily and spend it on most shop items. <strong>Amber</strong> builds up slowly over time and unlocks exclusive members-only content. <strong>Aurelia</strong> is nearly impossible to get and only spendable on the rarest items in the shop.
+      </div>
+
+      <p class="cmd-plain">You can check your balance of all three at any time using <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/balance</code>.</p>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── DAILY ── -->
+    <div class="guide-section reveal" id="daily">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">🌅</div>
+        <div>
+          <div class="guide-section-title">Daily & Streaks</div>
+          <div class="guide-section-sub">Your most consistent source of currency</div>
+        </div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">daily</div>
+          <div class="cmd-tag tag-free">Free · Once per day</div>
+        </div>
+        <p class="cmd-plain">This is the single most important command. Run it every day to claim free nectar and amber. That's it — just show up.</p>
+        <div class="cmd-steps">
+          <div class="cmd-step"><span class="cmd-step-num">01</span><span>Type <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/daily</code> in any bot channel</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">02</span><span>You instantly receive nectar and amber deposited to your wallet</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">03</span><span>Come back tomorrow — it resets every 24 hours</span></div>
+        </div>
+        <div class="cmd-tip"><strong>Streak bonus:</strong> If you claim daily for multiple days in a row without missing one, your streak builds up. A 5-day streak unlocks a bonus hex task. Don't break the chain.</div>
+        <div class="cmd-tip"><strong>VIP perk:</strong> If you hold the VIP role, you earn double nectar on every daily claim.</div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">balance</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Shows you all three of your wallets — how much nectar, amber, and aurelia you currently have, plus a short list of your most recent transactions so you can see what came in and what went out.</p>
+        <div class="cmd-tip"><strong>Private:</strong> Your balance is only visible to you — it shows as an ephemeral message that no one else can see.</div>
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── EARNING ── -->
+    <div class="guide-section reveal" id="earning">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">💰</div>
+        <div>
+          <div class="guide-section-title">Earning More Currency</div>
+          <div class="guide-section-sub">Beyond the daily</div>
+        </div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">earn</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Pulls up a full list of all available tasks you can complete to earn extra currency. Some tasks are repeatable, some are one-time only, and each has a different cooldown and reward.</p>
+        <div class="cmd-steps">
+          <div class="cmd-step"><span class="cmd-step-num">01</span><span>Run <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/earn</code> to see all available tasks and their rewards</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">02</span><span>Find a task you can do — leave a comment, react to a post, recruit someone</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">03</span><span>Complete the action in real life, then come back and use <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/task complete</code></span></div>
+        </div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">task complete</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">After you've actually done a task from the earn list, use this command to claim the reward. You'll pick the task from a dropdown menu and the currency hits your wallet immediately.</p>
+        <div class="cmd-tip"><strong>Honesty system:</strong> Task completion is on your honour. The hive notices who's genuinely showing up and who's not.</div>
+        <div class="cmd-example"><span>example →</span>/task complete · choose "Leave a comment on a post" · receive 2 nectar</div>
+      </div>
+
+      <div class="callout callout-gold">
+        <div class="callout-title">How to earn amber</div>
+        Amber is harder to come by. You get +1 amber every time you claim your daily, plus bonus amber from the 5-day streak task. It builds slowly by design — it's meant to reward fans who stick around.
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── SHOP ── -->
+    <div class="guide-section reveal" id="shop">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">🛍️</div>
+        <div>
+          <div class="guide-section-title">The Shop</div>
+          <div class="guide-section-sub">Spending your currency on Bee's exclusive items</div>
+        </div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">shop</div>
+          <div class="cmd-tag tag-free">Free to browse</div>
+        </div>
+        <p class="cmd-plain">Opens Bee's boutique and shows you everything currently available to purchase. Each item shows the price, how many are left in stock, and the item ID you need to buy it.</p>
+        <div class="cmd-steps">
+          <div class="cmd-step"><span class="cmd-step-num">01</span><span>Run <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/shop</code> to browse everything available</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">02</span><span>Note the ID number next to the item you want</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">03</span><span>Use <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/buy &lt;id&gt;</code> with that number to purchase it</span></div>
+        </div>
+        <div class="cmd-tip"><strong>NSFW items:</strong> Some items are hidden by default and only visible to members with the designated members-only role. If you see items listed by others but can't see them yourself, you don't have the role yet.</div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">buy &lt;id&gt;</div>
+          <div class="cmd-tag tag-cost">Costs currency</div>
+        </div>
+        <p class="cmd-plain">Purchases a specific item from the shop using its ID number. Before anything is deducted from your wallet, the bot shows you a confirmation screen so you can double-check what you're buying and how much it costs.</p>
+        <div class="cmd-steps">
+          <div class="cmd-step"><span class="cmd-step-num">01</span><span>Type <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/buy 3</code> (replace 3 with the actual item ID)</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">02</span><span>A confirmation embed appears showing the item name, price, and your current balance</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">03</span><span>Click ✅ Confirm to proceed, or ❌ Cancel to back out — nothing is charged until you confirm</span></div>
+        </div>
+        <div class="cmd-tip"><strong>Auto vs manual items:</strong> Some items deliver instantly. Others go into a queue and Bee fulfils them personally — you'll get a DM when it's ready. Your purchase history tracks both.</div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">purchases</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Shows your complete history of everything you've ever bought from the shop — what it was, what you paid, and whether it's been fulfilled or is still pending.</p>
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── WAITLIST ── -->
+    <div class="guide-section reveal" id="waitlist">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">⏳</div>
+        <div>
+          <div class="guide-section-title">Waitlists</div>
+          <div class="guide-section-sub">For when an item sells out</div>
+        </div>
+      </div>
+
+      <p class="cmd-plain">When an item runs out of stock, you can join its waitlist to be notified the moment it gets restocked. You'll get a DM the second more become available — giving you a head start over anyone who wasn't on the list.</p>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">waitlist join &lt;id&gt;</div>
+          <div class="cmd-tag tag-cost">Costs 2 nectar</div>
+        </div>
+        <p class="cmd-plain">Joins the waitlist for a sold-out item. It costs 2 nectar to hold your spot — this is fully refunded if you leave the waitlist yourself before the item restocks.</p>
+        <div class="cmd-example"><span>example →</span>/waitlist join 5 · joins waitlist for item #5 · costs 2 nectar</div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">waitlist leave &lt;id&gt;</div>
+          <div class="cmd-tag tag-free">Refunds your 2 nectar</div>
+        </div>
+        <p class="cmd-plain">Removes you from a waitlist and returns your 2 nectar immediately. If you changed your mind or got something else instead, you won't lose your currency.</p>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">waitlist view</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Shows all the waitlists you're currently on, your position in each queue, and how many other people are ahead of you.</p>
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── GIFTS ── -->
+    <div class="guide-section reveal" id="gifts">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">🎁</div>
+        <div>
+          <div class="guide-section-title">Gifts from Bee</div>
+          <div class="guide-section-sub">Checking and claiming what's waiting for you</div>
+        </div>
+      </div>
+
+      <p class="cmd-plain">Bee can send gifts directly to your inbox — currency, special rewards, or anything she decides to give you. Gifts don't arrive automatically in your wallet; you have to claim them yourself.</p>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">gifts view</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Shows everything currently sitting in your gift inbox — what it is, how much, and any message attached. Nothing is added to your balance until you claim it.</p>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">gifts claim &lt;id&gt;</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Claims a specific gift by its ID and adds it to your wallet. Run <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/gifts view</code> first to find the ID.</p>
+        <div class="cmd-example"><span>example →</span>/gifts claim 2 · claims gift #2 and adds it to your balance</div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">gifts claimall</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Claims every pending gift in your inbox in one go. If you've been away for a while and have multiple gifts waiting, this is the fastest way to collect them all.</p>
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── RANKING ── -->
+    <div class="guide-section reveal" id="ranking">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">🏆</div>
+        <div>
+          <div class="guide-section-title">Your Rank</div>
+          <div class="guide-section-sub">Tiers, scores, and the leaderboard</div>
+        </div>
+      </div>
+
+      <p class="cmd-plain">Every nectar you earn adds to your score. As your score grows, you climb through the hive tiers — each new tier gives you a Discord role and a one-time nectar bonus as a reward.</p>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">rank</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Shows your current tier, your score, and exactly how many more points you need to reach the next tier. Useful for knowing how close you are to an upgrade.</p>
+        <div class="cmd-tip"><strong>Score is cumulative:</strong> Your score counts all nectar you've ever earned — not just what's currently in your wallet. Spending nectar on the shop doesn't lower your rank score.</div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">leaderboard</div>
+          <div class="cmd-tag tag-free">Free</div>
+        </div>
+        <p class="cmd-plain">Shows the top-ranked fans in the server, sorted by score. Your own position is highlighted so you can see where you stand even if you're not in the top 10.</p>
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── FORGE ── -->
+    <div class="guide-section reveal" id="forge">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">⚗️</div>
+        <div>
+          <div class="guide-section-title">The Forge</div>
+          <div class="guide-section-sub">Creating aurelia — the rarest currency</div>
+        </div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">forge</div>
+          <div class="cmd-tag tag-rare">Rare · Irreversible</div>
+        </div>
+        <p class="cmd-plain">Sacrifices 50 nectar and 50 amber to create 1 aurelia. Aurelia is the most powerful currency in the hive and unlocks Bee's most exclusive shop items — things no one else can access.</p>
+        <div class="cmd-steps">
+          <div class="cmd-step"><span class="cmd-step-num">01</span><span>Make sure you have at least 50 nectar and 50 amber (check with <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/balance</code>)</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">02</span><span>Run <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/forge</code> — a confirmation screen appears before anything is deducted</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">03</span><span>Confirm the trade — 50 nectar + 50 amber are permanently consumed and 1 aurelia is added</span></div>
+        </div>
+        <div class="cmd-tip"><strong>This cannot be undone.</strong> Once forged, the nectar and amber are gone. Aurelia cannot be gifted to other fans — once you have it, it stays with you until you spend it.</div>
+      </div>
+    </div>
+
+    <div class="divider-ornament"><span>✦</span></div>
+
+    <!-- ── GIFTING ── -->
+    <div class="guide-section reveal" id="gifting">
+      <div class="guide-section-header">
+        <div class="guide-section-icon">💝</div>
+        <div>
+          <div class="guide-section-title">Gifting Other Fans</div>
+          <div class="guide-section-sub">Sending currency to people in the server</div>
+        </div>
+      </div>
+
+      <div class="cmd-entry">
+        <div class="cmd-entry-top">
+          <div class="cmd-name">gift &lt;user&gt; &lt;amount&gt;</div>
+          <div class="cmd-tag tag-cost">Costs currency</div>
+        </div>
+        <p class="cmd-plain">Sends nectar or amber from your wallet to another fan in the server. You pick the person, the amount, and which currency — then confirm before it sends.</p>
+        <div class="cmd-steps">
+          <div class="cmd-step"><span class="cmd-step-num">01</span><span>Type <code style="font-family:'DM Mono',monospace;font-size:0.85em;color:var(--gold3)">/gift</code> and tag the person you want to send to</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">02</span><span>Enter the amount and choose nectar or amber</span></div>
+          <div class="cmd-step"><span class="cmd-step-num">03</span><span>Confirm — the currency is deducted from you and lands in their wallet</span></div>
+        </div>
+        <div class="cmd-tip"><strong>Aurelia cannot be gifted.</strong> It can only be created through forging or granted directly by Bee's admins — it's not transferable between fans.</div>
+        <div class="cmd-example"><span>example →</span>/gift @username · amount: 10 · currency: nectar</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <span class="footer-bee">🐝</span>
+  <div class="footer-name">HONEYPOT</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="guide.html">Member Guide</a>
+  </div>
+  <div class="footer-mono">Exclusive fan economy bot · All rights reserved</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.guide-section');
+  const sidebarLinks = document.querySelectorAll('.sidebar-links a');
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        sidebarLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => scrollObserver.observe(s));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
